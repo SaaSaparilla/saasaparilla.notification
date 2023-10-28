@@ -1,14 +1,9 @@
 use axum::{
     body::Body,
-    extract::connect_info::MockConnectInfo,
-    http::{self, Request, StatusCode}
+    http::{self, Request, StatusCode},
 };
-use serde_json::{json, Value};
-use std::net::SocketAddr;
 use axum::body::HttpBody;
-use serde::Serialize;
-use tokio::net::TcpListener;
-use tower::{Service, ServiceExt};
+use tower::ServiceExt;
 
 use saasparilla_notification_receiver::*;
 

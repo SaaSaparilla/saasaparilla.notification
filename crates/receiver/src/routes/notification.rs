@@ -1,5 +1,5 @@
-use axum::http::StatusCode;
 use axum::{extract, Json};
+use axum::http::StatusCode;
 
 use super::super::types::notification::NotificationV1;
 
