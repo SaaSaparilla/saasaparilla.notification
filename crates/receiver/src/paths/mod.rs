@@ -1,1 +1,1 @@
-pub(crate) mod notification;
+pub mod notification;

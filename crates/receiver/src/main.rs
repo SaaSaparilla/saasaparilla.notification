@@ -1,6 +1,11 @@
 #![warn(clippy::all)]
 
-use saasparilla_notification_receiver::*;
+
+use self::paths::notification::app;
+
+mod paths;
+mod routes;
+mod types;
 
 #[tokio::main]
 pub(crate) async fn main() {
