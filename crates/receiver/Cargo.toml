@@ -17,6 +17,8 @@ tower.workspace = true
 tracing.workspace = true
 url.workspace = true
 
+# local dependencies
+saasparilla-notification-common.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true

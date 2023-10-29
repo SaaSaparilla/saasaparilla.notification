@@ -3,6 +3,7 @@ use axum::{
     http::{self, Request, StatusCode},
 };
 use tower::ServiceExt;
+
 use saasparilla_notification_receiver::app;
 
 #[tokio::test]
@@ -15,7 +16,7 @@ async fn create_notification_v1() {
                 .method(http::Method::POST)
                 .uri("/api/v1/notification")
                 .header(http::header::CONTENT_TYPE, "application/json")
-                .body(Body::from("{\"notification_emitter_id\":\"emitter_id\",\"notification_recipient_id\":\"recipient_id\",\"notification_delivery_semantics\":\"AT_LEAST_ONCE\",\"notification_retries_remaining\":3,\"notification_content_type\":\"content_type\",\"notification_content\":\"content\"}"))
+                .body(Body::from(r#"{"notification_emitter_id":"emitter_id","notification_recipient_id":"recipient_id","notification_delivery_semantics":"AT_LEAST_ONCE","notification_retries_remaining":3,"notification_content_type":"content_type","notification_content":"content"}"#))
                 .unwrap())
         .await
         .unwrap();

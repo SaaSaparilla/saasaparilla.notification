@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug)]
-pub(crate) struct NotificationV1 {
+pub struct NotificationV1 {
     notification_emitter_id: String,
     notification_recipient_id: String,
     // TODO: enum AT_LEAST_ONCE,AT_MOST_ONCE,EXACTLY_ONCE
