@@ -3,7 +3,9 @@ use axum::{
     http::{Request, StatusCode},
 };
 use tower::ServiceExt;
+
 use saasparilla_notification_receiver::app;
+
 #[tokio::test]
 async fn health() {
     let app = app();
