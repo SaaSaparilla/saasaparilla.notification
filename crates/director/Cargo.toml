@@ -1,5 +1,5 @@
 [package]
-name = "saasparilla-notification-director"
+name = "saasaparilla-notification-director"
 version = "0.1.0"
 edition = "2021"
 

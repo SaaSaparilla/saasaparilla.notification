@@ -704,7 +704,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ad4cc8da4ef723ed60bced201181d83791ad433213d8c24efffda1eec85d741"
 
 [[package]]
-name = "saasparilla-notification-director"
+name = "saasaparilla-notification-director"
 version = "0.1.0"
 dependencies = [
  "axum",
@@ -718,7 +718,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "saasparilla-notification-distributor"
+name = "saasaparilla-notification-distributor"
 version = "0.1.0"
 dependencies = [
  "axum",
@@ -732,13 +732,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "saasparilla-notification-receiver"
+name = "saasaparilla-notification-receiver"
 version = "0.1.0"
 dependencies = [
  "axum",
  "eyre",
  "reqwest",
- "saasparilla_notification_common",
+ "saasaparilla_notification_common",
  "serde",
  "serde_json",
  "thiserror",
@@ -749,7 +749,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "saasparilla_notification_common"
+name = "saasaparilla_notification_common"
 version = "0.1.0"
 dependencies = [
  "eyre",

@@ -20,13 +20,13 @@ COPY crates/director/Cargo.toml crates/director/Cargo.toml
 COPY crates/distributor/Cargo.toml crates/distributor/Cargo.toml
 COPY crates/receiver/Cargo.toml crates/receiver/Cargo.toml
 
-RUN cargo install --color always --bin saasparilla-notification-receiver --locked --path crates/receiver
+RUN cargo install --color always --bin saasaparilla-notification-receiver --locked --path crates/receiver
 
 FROM builder as ApplicationBuilder
 WORKDIR /app
 
 COPY --from=dependencybuilder /app/target target
-RUN find target -name '*saasparilla*' -type f -delete
+RUN find target -name '*saasaparilla*' -type f -delete
 COPY . .
 
 # TODO: add https://github.com/qdrant/qdrant/pull/1856/files as a just script to increase speed of multistage build
@@ -35,10 +35,10 @@ COPY . .
 #             dev/stg/prod builds should be identical release objects
 # TODO: add `--out-dir /app/bin` once `--out-dir` is stabilized to reduce size of multistage build
 # TODO: could probably do some pre-building based on some copying of `Cargo.*` files
-RUN cargo build --future-incompat-report --color always --bin saasparilla-notification-receiver --release --locked
+RUN cargo build --future-incompat-report --color always --bin saasaparilla-notification-receiver --release --locked
 
 FROM rust:1.73-alpine as Final
 
-COPY --from=applicationbuilder /app/target/release/saasparilla-notification-receiver /usr/local/bin/saasparilla-notification-receiver
+COPY --from=applicationbuilder /app/target/release/saasaparilla-notification-receiver /usr/local/bin/saasaparilla-notification-receiver
 
-CMD ["saasparilla-notification-receiver"]
+CMD ["saasaparilla-notification-receiver"]

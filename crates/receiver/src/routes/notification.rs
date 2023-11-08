@@ -1,7 +1,7 @@
 use axum::{extract, Json};
 use axum::http::StatusCode;
 
-use saasparilla_notification_common::types::notification::NotificationV1;
+use saasaparilla_notification_common::types::notification::NotificationV1;
 
 // TODO: phase 1 - http request to director
 // TODO: phase 2 - push to kafka topic

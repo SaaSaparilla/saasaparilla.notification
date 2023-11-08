@@ -1,5 +1,5 @@
 [package]
-name = "saasparilla-notification-receiver"
+name = "saasaparilla-notification-receiver"
 version = "0.1.0"
 edition = "2021"
 
@@ -18,7 +18,7 @@ tracing.workspace = true
 url.workspace = true
 
 # local dependencies
-saasparilla_notification_common.workspace = true
+saasaparilla_notification_common.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true

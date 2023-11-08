@@ -17,4 +17,4 @@ tracing = "0.1.40"
 url = "2.4.1"
 
 # local dependencies
-saasparilla_notification_common = { path = "crates/common" }
+saasaparilla_notification_common = { path = "crates/common" }

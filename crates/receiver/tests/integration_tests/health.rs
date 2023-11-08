@@ -4,7 +4,7 @@ use axum::{
 };
 use tower::ServiceExt;
 
-use saasparilla_notification_receiver::app;
+use saasaparilla_notification_receiver::app;
 
 #[tokio::test]
 async fn health() {
