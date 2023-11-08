@@ -1,6 +1,5 @@
 #![warn(clippy::all)]
 
-
 use self::paths::notification::app;
 
 mod paths;

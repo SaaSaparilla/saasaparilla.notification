@@ -15,7 +15,8 @@ async fn health() {
             Request::builder()
                 .uri("/healthz")
                 .body(Body::empty())
-                .unwrap())
+                .unwrap(),
+        )
         .await
         .unwrap();
 
