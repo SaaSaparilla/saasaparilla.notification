@@ -23,7 +23,8 @@
 * `cargo test`
 * `cargo clippy`
 * `cargo run`
-* `docker build .`
+* `docker buildx build --build-arg COMPONENT=[receiver|director|distributor] . -t [receiver|director|distriubtor]:latest`
+* `docker run -p 3000 [receiver|director|distributor]`
 
 ### Architecture
 #### Receiver

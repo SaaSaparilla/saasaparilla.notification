@@ -2,3 +2,7 @@ target
 .dockerignore
 .gitignore
 .idea
+
+Dockerfile
+LICENSE
+README.md
