@@ -3,6 +3,6 @@ target
 .gitignore
 .idea
 
+justfile
 Dockerfile
-LICENSE
 README.md

@@ -18,13 +18,12 @@
 
 ### Development
 
-* `cargo fmt`
-* `cargo build`
-* `cargo test`
-* `cargo clippy`
-* `cargo run`
-* `docker buildx build --build-arg COMPONENT=[receiver|director|distributor] . -t [receiver|director|distriubtor]:latest`
-* `docker run -p 3000 [receiver|director|distributor]`
+* `just lint`
+* `just build`
+* `just test`
+* `just release`
+* `just docker-build-all`
+* `just docker-run`
 
 ### Architecture
 #### Receiver

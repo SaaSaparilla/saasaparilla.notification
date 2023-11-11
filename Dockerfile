@@ -42,6 +42,8 @@ RUN cargo build --future-incompat-report --color "always" --bin "saasaparilla-no
 FROM alpine:3.18 as Final
 WORKDIR /app
 
+COPY --link LICENSE /app/LICENSE
+
 ARG COMPONENT
 COPY --from=applicationbuilder /app/target/release/saasaparilla-notification-${COMPONENT} /app/bin
 CMD ["./bin"]
