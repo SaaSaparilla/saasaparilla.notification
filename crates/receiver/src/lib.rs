@@ -7,3 +7,4 @@ pub use self::paths::notification::app;
 
 mod paths;
 mod routes;
+mod settings;

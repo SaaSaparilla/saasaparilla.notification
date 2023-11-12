@@ -25,6 +25,15 @@
 * `just docker-build-all`
 * `just docker-run`
 
+#### Build Prerequisites
+
+* [just](https://github.com/casey/just)
+* [docker](https://docs.docker.com/reference/) or a compatible image builder (with [buildkit](https://docs.docker.com/build/buildkit/) support)
+* [cargo](https://doc.rust-lang.org/cargo/)
+* [rustc](https://doc.rust-lang.org/stable/book/)
+* [clippy](https://github.com/rust-lang/rust-clippy#usage)
+* [gcc](https://gcc.gnu.org/) or another C compiler
+
 ### Architecture
 #### Receiver
 

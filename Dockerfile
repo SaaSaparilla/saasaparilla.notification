@@ -45,5 +45,6 @@ WORKDIR /app
 COPY --link LICENSE /app/LICENSE
 
 ARG COMPONENT
-COPY --from=applicationbuilder /app/target/release/saasaparilla-notification-${COMPONENT} /app/bin
-CMD ["./bin"]
+COPY --from=applicationbuilder --link /app/target/release/saasaparilla-notification-${COMPONENT} /app/bin
+COPY --link crates/${COMPONENT}/config.toml /app/config.toml
+CMD ["./bin", "config-file-path=config.toml"]

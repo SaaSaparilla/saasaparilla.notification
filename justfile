@@ -17,6 +17,15 @@ release: lint build test
   echo Creating release build...
   cargo build --future-incompat-report --color always --release --locked
 
+run-director:
+  cargo run --bin saasaparilla-notification-director -- --config-file-path=crates/director/config.toml
+
+run-distrubutor:
+  cargo run --bin saasaparilla-notification-distrubutor -- --config-file-path=crates/distrubutor/config.toml
+
+run-receiver:
+  cargo run --bin saasaparilla-notification-receiver -- --config-file-path=crates/receiver/config.toml
+
 docker-build-all: docker-build-director docker-build-distributor docker-build-receiver
 
 docker-build-director:
@@ -33,6 +42,6 @@ docker-build-receiver:
 
 docker-run: docker-build-all
   echo Running locally...
-  docker run -p 3000 receiver:latest
-  docker run -p 3001 director:latest
-  docker run -p 3002 director:latest
+  docker run receiver:latest &
+  docker run director:latest &
+  docker run director:latest &

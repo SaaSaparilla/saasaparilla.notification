@@ -9,4 +9,5 @@ pub struct NotificationV1 {
     notification_retries_remaining: isize,
     notification_content_type: String,
     notification_content: String,
+    // notification_valid_for: String,
 }

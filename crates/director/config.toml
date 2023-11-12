@@ -1,0 +1,12 @@
+debug = true
+
+[server]
+network_interface = "0.0.0.0"
+port = "3000"
+
+[kafka]
+url = "kafka:5000"
+topic = "saasaparilla_notification_received"
+
+[redis]
+url = "redis:5000"
