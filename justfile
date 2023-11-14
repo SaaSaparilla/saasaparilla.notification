@@ -30,18 +30,16 @@ docker-build-all: docker-build-director docker-build-distributor docker-build-re
 
 docker-build-director:
   echo Building director image...
-  docker buildx build --build-arg COMPONENT=director . -t director:latest
+  docker buildx build --build-arg COMPONENT=director . -t saasaparilla/notification/director:latest
 
 docker-build-distributor:
   echo Building distributor image...
-  docker buildx build --build-arg COMPONENT=distributor . -t distributor:latest
+  docker buildx build --build-arg COMPONENT=distributor . -t saasaparilla/notification/distributor:latest
 
 docker-build-receiver:
   echo Building receiver image...
-  docker buildx build --build-arg COMPONENT=receiver . -t receiver:latest
+  docker buildx build --build-arg COMPONENT=receiver . -t saasaparilla/notification/receiver:latest
 
 docker-run: docker-build-all
   echo Running locally...
-  docker run receiver:latest &
-  docker run director:latest &
-  docker run director:latest &
+  docker-compose up

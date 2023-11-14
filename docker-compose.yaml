@@ -1,0 +1,43 @@
+services:
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+  kafka:
+    image: "confluentinc/cp-kafka:latest"
+    ports:
+      - "9092:9092"
+    environment:
+      CLUSTER_ID: "ciWo7IWazngRchmPES6q5A=="
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+      KAFKA_BROKER_ID: "1"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_LISTENERS: "INTERNAL://kafka:29092,CONTROLLER://kafka:29093,EXTERNAL://0.0.0.0:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+      KAFKA_NODE_ID: "1"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+  postgresql:
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "saasaparilla_notification"
+      POSTGRES_USER: "saasaparilla_notification"
+      POSTGRES_PASSWORD: "password"
+
+  receiver:
+    image: "saasaparilla/notification/receiver:latest"
+    ports:
+      - "8080:8080"
+    environment:
+#      SAASAPARILLA_NOTIFICATION_RECEIVER_KAFKA_HOST: "kafka"
+      SAASAPARILLA_NOTIFICATION_RECEIVER_KAFKA_PORT: "9092"
+    depends_on:
+      - kafka

@@ -1,8 +1,9 @@
 target
-.dockerignore
-.gitignore
 .idea
 
-justfile
+.dockerignore
+.gitignore
 Dockerfile
+docker-compose.yaml
+justfile
 README.md

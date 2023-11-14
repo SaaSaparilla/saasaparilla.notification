@@ -1,6 +1,6 @@
 #![warn(clippy::all)]
 
-use self::paths::notification::app;
+use crate::paths::notification::app;
 use crate::settings::SETTINGS;
 use std::error::Error;
 

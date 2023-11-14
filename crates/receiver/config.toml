@@ -2,8 +2,9 @@ debug = true
 
 [server]
 network_interface = "0.0.0.0"
-port = "3000"
+port = "8080"
 
 [kafka]
-url = "kafka:5000"
+host = "kafka"
+port = "9092"
 topic = "saasaparilla_notification_received"
