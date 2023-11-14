@@ -956,7 +956,6 @@ dependencies = [
  "reqwest",
  "saasaparilla_notification_common",
  "serde",
- "serde_derive",
  "serde_json",
  "thiserror",
  "tokio",
@@ -969,7 +968,9 @@ dependencies = [
 name = "saasaparilla_notification_common"
 version = "0.1.0"
 dependencies = [
+ "config",
  "eyre",
+ "once_cell",
  "reqwest",
  "serde",
  "thiserror",

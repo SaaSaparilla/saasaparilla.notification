@@ -15,9 +15,15 @@ pub(crate) async fn main() -> Result<(), Box<dyn Error>> {
         "Booting Server on {}:{}",
         settings.server.network_interface, settings.server.port
     );
-    axum::Server::bind(&"0.0.0.0:3000".parse()?)
-        .serve(app().into_make_service())
-        .await
-        .unwrap();
+    axum::Server::bind(
+        &format!(
+            "{}:{}",
+            settings.server.network_interface, settings.server.port
+        )
+        .parse()?,
+    )
+    .serve(app().into_make_service())
+    .await
+    .unwrap();
     Ok(())
 }
