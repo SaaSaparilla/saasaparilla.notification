@@ -2,13 +2,16 @@
 
 ### Acceptance Criteria
 
-* service can be deployed in a sensible default configuration using:
+* service can be deployed in a sensible default configuration in an existing k8s cluster or locally (for testing 
+  purposes) using:
   * `helm install`
+  * `docker-compose up`
 * service supports client connections using sockets, sse, and http long polling
 * service can scale horizontally sufficiently to handle 1M messages/second across 100M clients
 * service exposes prometheus metrics
 * service chart relies on the [prometheus-adapter](https://github.com/kubernetes-sigs/prometheus-adapter) for scaling metrics
 * blast radius of any service being temporarily unavailable for less than 10 minutes does not include data loss
+* backing services incl. `postgres`, `kafka`, and `redis` can be managed either in k8s or docker-compose using `pulumi`
 
 ### Installation Prerequisites
 

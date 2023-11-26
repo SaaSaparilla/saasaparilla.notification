@@ -5,6 +5,7 @@
 
 pub use self::paths::notification::app;
 
+mod daos;
 mod paths;
 mod routes;
 mod settings;

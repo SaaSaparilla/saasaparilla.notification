@@ -3,6 +3,7 @@ use serde::Deserialize;
 use std::env;
 use std::fmt::Debug;
 
+// TODO: switch to figment+clap
 pub fn retrieve_config<T: Debug + for<'de> Deserialize<'de>>(
     prefix: &str,
 ) -> Result<T, ConfigError> {

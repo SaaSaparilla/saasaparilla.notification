@@ -4,6 +4,7 @@ use crate::paths::notification::app;
 use crate::settings::SETTINGS;
 use std::error::Error;
 
+mod daos;
 mod paths;
 mod routes;
 mod settings;
