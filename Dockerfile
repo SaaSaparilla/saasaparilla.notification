@@ -1,12 +1,12 @@
-FROM rust:1.73-alpine3.18 as Builder
+FROM rust:1.75-alpine as builder
 RUN apk add --no-cache build-base
 
 WORKDIR /app
 COPY rust-toolchain.toml .
-RUN rustup component add cargo clippy rust-std rustc rustfmt
+RUN rustup component add clippy rustfmt
 
 
-FROM builder as DependencyBuilder
+FROM builder as dependencyBuilder
 WORKDIR /app
 
 ENV CRATES="common director distributor receiver"
@@ -20,10 +20,10 @@ COPY --link crates/director/Cargo.toml crates/director/Cargo.toml
 COPY --link crates/distributor/Cargo.toml crates/distributor/Cargo.toml
 COPY --link crates/receiver/Cargo.toml crates/receiver/Cargo.toml
 
-RUN cargo build --color always --release --locked
+RUN cargo build --color "auto" --release --locked
 
 
-FROM builder as ApplicationBuilder
+FROM builder as applicationBuilder
 WORKDIR /app
 
 COPY --from=dependencybuilder /app/target target
@@ -35,16 +35,18 @@ COPY . .
 #             dev/stg/prod builds should be identical release objects
 # TODO: add `--out-dir /app/bin` once `--out-dir` is stabilized to reduce size of multistage build
 ARG COMPONENT
-RUN cargo build --future-incompat-report --color "always" --bin "saasaparilla-notification-${COMPONENT}" --release --locked
+ENV COMPONENT_BIN="saasaparilla-notification-${COMPONENT}"
+RUN cargo build --future-incompat-report --color "auto" --bin "${COMPONENT_BIN}" --release --locked
 
 
 # https://hub.docker.com/_/rust
-FROM alpine:3.18 as Final
+FROM alpine:3.18 as final
 WORKDIR /app
 
 COPY --link LICENSE /app/LICENSE
 
 ARG COMPONENT
-COPY --from=applicationbuilder --link /app/target/release/saasaparilla-notification-${COMPONENT} /app/bin
+ENV COMPONENT_BIN="saasaparilla-notification-${COMPONENT}"
+COPY --from=applicationbuilder --link "/app/target/release/${COMPONENT_BIN}" /app/bin
 COPY --link crates/${COMPONENT}/config.toml /app/config.toml
-CMD ["./bin", "config-file-path=config.toml"]
+CMD ["/app/bin", "config-file-path=config.toml"]
