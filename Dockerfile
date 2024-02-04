@@ -14,11 +14,11 @@ RUN printf "${CRATES}" | tr ' ' '\n' | xargs -I{} sh -c 'mkdir -p crates/{}/src 
 
 # awaiting release of https://github.com/moby/buildkit/pull/3001
 #COPY --parents --link ./Cargo.* ./crates/*/Cargo.toml ./
-COPY --link Cargo.lock Cargo.toml ./
-COPY --link crates/common/Cargo.toml crates/common/Cargo.toml
-COPY --link crates/director/Cargo.toml crates/director/Cargo.toml
-COPY --link crates/distributor/Cargo.toml crates/distributor/Cargo.toml
-COPY --link crates/receiver/Cargo.toml crates/receiver/Cargo.toml
+COPY --link "Cargo.lock" "Cargo.toml" ./
+COPY --link "crates/common/Cargo.toml" crates/common/Cargo.toml
+COPY --link "crates/director/Cargo.toml" crates/director/Cargo.toml
+COPY --link "crates/distributor/Cargo.toml" crates/distributor/Cargo.toml
+COPY --link "crates/receiver/Cargo.toml" crates/receiver/Cargo.toml
 
 RUN cargo build --color "auto" --release --locked
 
@@ -47,6 +47,16 @@ COPY --link LICENSE /app/LICENSE
 
 ARG COMPONENT
 ENV COMPONENT_BIN="saasaparilla-notification-${COMPONENT}"
-COPY --from=applicationbuilder --link "/app/target/release/${COMPONENT_BIN}" /app/bin
-COPY --link crates/${COMPONENT}/config.toml /app/config.toml
+COPY --from=applicationbuilder --link "/app/target/release/${COMPONENT_BIN}" "/app/bin"
+COPY --link "crates/${COMPONENT}/config.toml" "/app/config.toml"
+CMD ["/app/bin", "config-file-path=config.toml"]
+
+
+FROM scratch as minimal
+WORKDIR /app
+
+# generate the list of required libs with `ldd /app/bin`
+COPY --from=final --link "/lib/ld-musl-x86_64.so.1" /lib/
+
+COPY --from=final --link "/app/" /app/
 CMD ["/app/bin", "config-file-path=config.toml"]
