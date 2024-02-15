@@ -3,6 +3,7 @@
 use crate::paths::notification::app;
 use crate::settings::SETTINGS;
 use std::error::Error;
+use tokio::net::TcpListener;
 
 mod daos;
 mod paths;
@@ -16,15 +17,12 @@ pub(crate) async fn main() -> Result<(), Box<dyn Error>> {
         "Booting Server on {}:{}",
         settings.server.network_interface, settings.server.port
     );
-    axum::Server::bind(
-        &format!(
-            "{}:{}",
-            settings.server.network_interface, settings.server.port
-        )
-        .parse()?,
-    )
-    .serve(app().into_make_service())
+    let listener = TcpListener::bind(format!(
+        "{}:{}",
+        settings.server.network_interface, settings.server.port
+    ))
     .await
     .unwrap();
+    axum::serve(listener, app()).await.unwrap();
     Ok(())
 }

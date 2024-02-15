@@ -9,6 +9,7 @@ edition = "2021"
 axum.workspace = true
 config.workspace = true
 eyre.workspace = true
+kafka.workspace = true
 once_cell.workspace = true
 reqwest.workspace = true
 serde.workspace = true
@@ -23,5 +24,6 @@ url.workspace = true
 saasaparilla_notification_common.workspace = true
 
 [dev-dependencies]
+http-body-util.workspace = true
 serde_json.workspace = true
 tower.workspace = true

@@ -1,7 +1,8 @@
 use axum::{
-    body::{Body, HttpBody},
+    body::Body,
     http::{Request, StatusCode},
 };
+use http_body_util::BodyExt;
 use tower::ServiceExt;
 
 use saasaparilla_notification_receiver::app;
@@ -21,5 +22,11 @@ async fn health() {
         .unwrap();
 
     assert_eq!(StatusCode::OK, response.status());
-    assert!(response.into_body().data().await.is_none());
+    assert!(response
+        .into_body()
+        .collect()
+        .await
+        .unwrap()
+        .to_bytes()
+        .is_empty());
 }
