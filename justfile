@@ -26,20 +26,26 @@ run-distrubutor:
 run-receiver:
   cargo run --bin saasaparilla-notification-receiver -- --config-file-path=crates/receiver/config.toml
 
-docker-build-all: docker-build-director docker-build-distributor docker-build-receiver
+docker-build-all: docker-build-dependencies docker-build-director docker-build-distributor docker-build-receiver
+
+docker-build-dependencies:
+  echo Building dependencies...
+  docker buildx build --target dependencyBuilder .
 
 docker-build-director:
   echo Building director image...
-  docker buildx build --target final --build-arg COMPONENT=director . -t saasaparilla/notification/director:latest
+  docker buildx build --target minimal --build-arg COMPONENT=director . -t saasaparilla/notification/director:latest
 
 docker-build-distributor:
   echo Building distributor image...
-  docker buildx build --target final --build-arg COMPONENT=distributor . -t saasaparilla/notification/distributor:latest
+  docker buildx build --target minimal --build-arg COMPONENT=distributor . -t saasaparilla/notification/distributor:latest
 
 docker-build-receiver:
   echo Building receiver image...
-  docker buildx build --target final --build-arg COMPONENT=receiver . -t saasaparilla/notification/receiver:latest
+  docker buildx build --target minimal --build-arg COMPONENT=receiver . -t saasaparilla/notification/receiver:latest
 
 docker-run: docker-build-all
   echo Running locally...
+  docker-compose down
   docker-compose up
+  docker-compose down

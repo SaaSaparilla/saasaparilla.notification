@@ -1,5 +1,6 @@
 #![warn(clippy::all)]
 
+use crate::daos::kafka::PRODUCER;
 use crate::paths::notification::app;
 use crate::settings::SETTINGS;
 use std::error::Error;
@@ -12,7 +13,8 @@ mod settings;
 
 #[tokio::main]
 pub(crate) async fn main() -> Result<(), Box<dyn Error>> {
-    let settings = SETTINGS.get().unwrap();
+    init_lazy_statics().await?;
+    let settings = SETTINGS.get().ok_or("")?;
     println!(
         "Booting Server on {}:{}",
         settings.server.network_interface, settings.server.port
@@ -24,5 +26,11 @@ pub(crate) async fn main() -> Result<(), Box<dyn Error>> {
     .await
     .unwrap();
     axum::serve(listener, app()).await.unwrap();
+    Ok(())
+}
+
+async fn init_lazy_statics() -> Result<(), Box<dyn Error>> {
+    SETTINGS.get().ok_or("")?;
+    PRODUCER.get().ok_or("")?;
     Ok(())
 }

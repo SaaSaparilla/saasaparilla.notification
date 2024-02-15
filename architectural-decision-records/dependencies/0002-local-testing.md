@@ -1,0 +1,3 @@
+kind
+strimzi kafka-operator
+???

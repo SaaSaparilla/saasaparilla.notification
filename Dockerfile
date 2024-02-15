@@ -1,5 +1,5 @@
-FROM rust:1.75-alpine as builder
-RUN apk add --no-cache build-base
+FROM rust:1.76-alpine as builder
+RUN apk add --no-cache build-base perl
 
 WORKDIR /app
 COPY rust-toolchain.toml .
@@ -40,7 +40,7 @@ RUN cargo build --future-incompat-report --color "auto" --bin "${COMPONENT_BIN}"
 
 
 # https://hub.docker.com/_/rust
-FROM alpine:3.18 as final
+FROM alpine:3.19 as final
 WORKDIR /app
 
 COPY --link LICENSE /app/LICENSE

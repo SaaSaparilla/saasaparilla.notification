@@ -5,6 +5,5 @@ network_interface = "0.0.0.0"
 port = "8080"
 
 [kafka]
-host = "kafka"
-port = "9092"
+hosts = "kafka:9092"
 topic = "saasaparilla_notification_received"

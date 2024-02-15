@@ -5,17 +5,23 @@ services:
       - "6379:6379"
   kafka:
     image: "confluentinc/cp-kafka:latest"
+    hostname: "kafka"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --version || exit 1"]
+      interval: 10s
+      timeout: 8s
+      retries: 3
     ports:
       - "9092:9092"
     environment:
       CLUSTER_ID: "ciWo7IWazngRchmPES6q5A=="
-      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://kafka:9092"
       KAFKA_BROKER_ID: "1"
       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
       KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
-      KAFKA_LISTENERS: "INTERNAL://kafka:29092,CONTROLLER://kafka:29093,EXTERNAL://0.0.0.0:9092"
+      KAFKA_LISTENERS: "INTERNAL://kafka:29092,CONTROLLER://kafka:29093,EXTERNAL://kafka:9092"
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
       KAFKA_LOG_DIRS: "/var/lib/kafka/data"
       KAFKA_NODE_ID: "1"
@@ -23,6 +29,16 @@ services:
       KAFKA_PROCESS_ROLES: "broker,controller"
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+  kafka-setup:
+    image: "confluentinc/cp-kafka:latest"
+    restart: "no"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint:
+      - "sh"
+      - "-c"
+      - "kafka-topics --bootstrap-server kafka:9092 --topic saasaparilla_notification_received --partitions 1 --create"
   postgresql:
     image: "postgres:latest"
     ports:
@@ -34,10 +50,9 @@ services:
 
   receiver:
     image: "saasaparilla/notification/receiver:latest"
+    restart: "on-failure"
     ports:
       - "8080:8080"
-    environment:
-#      SAASAPARILLA_NOTIFICATION_RECEIVER_KAFKA_HOST: "kafka"
-      SAASAPARILLA_NOTIFICATION_RECEIVER_KAFKA_PORT: "9092"
     depends_on:
-      - kafka
+      kafka-setup:
+        condition: service_completed_successfully

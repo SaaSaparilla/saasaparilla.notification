@@ -13,7 +13,7 @@ pub struct Server {
 #[derive(Debug, Deserialize)]
 #[allow(unused)]
 pub struct Kafka {
-    pub host: String,
+    pub hosts: String,
     pub topic: String,
 }
 
@@ -30,7 +30,6 @@ pub struct Settings {
 /// the program crashes and exits if configuration cannot be loaded.
 ///
 /// TODO: replace with [LazyLock](https://doc.rust-lang.org/beta/std/sync/struct.LazyLock.html) (and get rid of once_cell dependency) once it is stabilized
-///
 /// TODO: make `pub(crate)` once [RUST-10932](https://youtrack.jetbrains.com/issue/RUST-10932/False-negative-E0603-A-private-item-was-used-outside-its-scope) is fixed
 #[allow(unused)]
 pub static SETTINGS: Lazy<OnceLock<Settings>> = Lazy::new(|| {
