@@ -1,4 +1,4 @@
-# Use rust-rdkafka for kafka clients
+# Use kafka-rust for kafka clients
 
 ## Context and Problem Statement
 
@@ -36,4 +36,4 @@ Which kafka middleware do we use?
 
 ## Decision Outcome
 
-Use `rust-rdkafka` for the initial buildout, and switch to a rust-native solution once one is sufficiently mature.
+Use `rust-kafka` for the initial buildout, and switch to a rust-rdkafka if this proves to be insufficient.
