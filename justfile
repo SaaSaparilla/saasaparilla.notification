@@ -44,8 +44,17 @@ docker-build-receiver:
   echo Building receiver image...
   docker buildx build . --file ./docker/Dockerfile --target minimal --build-arg COMPONENT=receiver -t saasaparilla/notification/receiver:latest
 
-docker-run: docker-build-all
+run-docker: docker-build-all
   echo Running locally...
   docker-compose --file ./docker/docker-compose.yaml down
   docker-compose --file ./docker/docker-compose.yaml up
   docker-compose --file ./docker/docker-compose.yaml down
+
+run-kind: docker-build-all
+  echo Deploying kind cluster...
+  kind delete cluster --name saasaparilla-notification
+  kind create cluster --config kind/cluster.yaml --name saasaparilla-notification --wait 5m
+  #TODO: install flux
+  #TODO: await service reconciliation
+  #TODO: run integration tests
+  kind delete cluster --name saasaparilla-notification
