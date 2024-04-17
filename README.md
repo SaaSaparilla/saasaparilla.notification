@@ -11,7 +11,7 @@
 * service exposes prometheus metrics
 * service chart relies on the [prometheus-adapter](https://github.com/kubernetes-sigs/prometheus-adapter) for scaling metrics
 * blast radius of any service being temporarily unavailable for less than 10 minutes does not include data loss
-* backing services incl. `postgres`, `kafka`, and `redis` can be managed either in k8s or docker-compose using `pulumi`
+* backing services incl. `postgres`, `kafka`, and `garnet (redis)` can be managed either in k8s or docker-compose using `pulumi`
 
 ### Installation Prerequisites
 

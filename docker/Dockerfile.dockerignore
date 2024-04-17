@@ -1,10 +1,9 @@
-architectural-decision-records
-target
 .idea
+architectural-decision-records
+docker
+target
+timoni
 
-.dockerignore
 .gitignore
-Dockerfile
-docker-compose.yaml
 justfile
 README.md
