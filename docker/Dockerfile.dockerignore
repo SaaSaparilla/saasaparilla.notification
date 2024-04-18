@@ -1,9 +1,11 @@
-.idea
-architectural-decision-records
-docker
-target
-timoni
+.idea/
+architectural-decision-records/
+docker/
+kind/
+target/
+timoni/
 
 .gitignore
+.tool-versions
 justfile
 README.md

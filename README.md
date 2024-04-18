@@ -37,6 +37,11 @@
 * [clippy](https://github.com/rust-lang/rust-clippy#usage)
 * [gcc](https://gcc.gnu.org/) or another C compiler
 
+#### Test Prerequisites
+* [kubectl](https://kubernetes.io/docs/reference/kubectl/)
+* [kind](https://kind.sigs.k8s.io/)
+* [flux](https://fluxcd.io/flux/)
+
 ### Architecture
 #### Receiver
 
