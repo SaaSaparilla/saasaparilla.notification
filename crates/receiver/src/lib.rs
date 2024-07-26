@@ -9,3 +9,5 @@ mod daos;
 mod paths;
 mod routes;
 mod settings;
+
+use settings::SETTINGS;
