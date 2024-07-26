@@ -11,7 +11,8 @@ eyre = "0.6.8"
 http-body-util = "0.1.0"
 kafka = "0.10.0"
 once_cell = "1.18.0"
-reqwest = { version = "0.11.22", default-features = false, features = ["json", "gzip", "rustls-tls"] }
+openssl = { version = "0.10.66", features = ["vendored"] } #https://users.rust-lang.org/t/sigsegv-with-program-linked-against-openssl-in-an-alpine-container/52172/4
+reqwest = { version = "0.12.5", default-features = false, features = ["json", "gzip", "rustls-tls"] }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0.107"
 thiserror = "1.0.50"
