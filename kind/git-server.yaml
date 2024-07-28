@@ -28,13 +28,6 @@ spec:
           env:
             - name: SSH_AUTH_METHODS
               value: "publickey"
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - "sh"
-                  - "-c"
-                  - "mkdir /home/git/.ssh && cp /tmp/ssh/authorized_keys /home/git/.ssh/authorized_keys"
           ports:
             - containerPort: 22
               name: ssh
@@ -43,6 +36,9 @@ spec:
               name: git
             - mountPath: /tmp/ssh
               name: ssh
+            - mountPath: /docker-entrypoint.d/00-load-keys.sh
+              subPath: 00-load-keys.sh
+              name: entrypoint
       securityContext:
         fsGroup: 1000
       tolerations:
@@ -56,9 +52,34 @@ spec:
           secret:
             secretName: git-server-ssh-credentials
             items:
-              - key: public_key
+              - key: authorized_keys
                 mode: 0666
                 path: authorized_keys
+              - key: ssh_host_ecdsa_key
+                mode: 0600
+                path: ssh_host_ecdsa_key
+              - key: ssh_host_ecdsa_key.pub
+                mode: 0644
+                path: ssh_host_ecdsa_key.pub
+              - key: ssh_host_ed25519_key
+                mode: 0600
+                path: ssh_host_ed25519_key
+              - key: ssh_host_ed25519_key.pub
+                mode: 0644
+                path: ssh_host_ed25519_key.pub
+              - key: ssh_host_rsa_key
+                mode: 0600
+                path: ssh_host_rsa_key
+              - key: ssh_host_rsa_key.pub
+                mode: 0644
+                path: ssh_host_rsa_key.pub
+        - name: entrypoint
+          configMap:
+            name: git-server-entrypoint
+            items:
+              - key: 00-load-keys.sh
+                mode: 0777
+                path: 00-load-keys.sh
 ---
 apiVersion: v1
 kind: Service
@@ -84,13 +105,13 @@ spec:
   ref:
     branch: master
   secretRef:
-    name: git-server-ssh-credentials
+    name: flux-git-ssh-credentials
   url: ssh://git@git-server:22/srv/git
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: git-server-ssh-credentials
+  name: flux-git-ssh-credentials
   namespace: flux-system
 type: Opaque
 stringData:
@@ -136,8 +157,96 @@ stringData:
     FoVUp3wVshqnVCwXm5QI/v9gvFY=
     -----END OPENSSH PRIVATE KEY-----
   known_hosts: |
-    git-server ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBH6VQ5+3XgMbR+Lk+w+bTqK5Grth871GaM31v1bYk8HoT1XYRSUBZQpJS4rg5FgsrSecSS1Xgv3N3dDlschD+cE=
-    git-server ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAt/jkIQOuc+PSu9HS5h5ciHVEHjw2urKUH7Yiyb2bwf
-    git-server ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAoKhME5++nt1NReifGlzTSpDj3ZA/4XNePTG9+4Vpehsa58xBSit15UhCKzercDStEudZOk0Q3sgnmJawQYbWpYPR4dI3ma0ugXN3LL/WKbkxjXGbxvj5ZlsD1hOmPNs4KZ5EMS37YBb8ddGsJVzrggPJrhoYRP2qjcS+LlYoow/VTHynQIsLDTnMpfChrtr2HFKb+5HAnTFUrDglq2kDZxlg+xbeGeyz4mxuz1cZ5PgeCK6SGxZgLTq/6INNIsl/cwt98fxr7fsi3T7L9Yo+tg2NHiKow9dFneuRZNxx1RmAJzsJTRHLusJJhh8KIdzjmmdGbs1zop8PhJCsq/fN3+cLJazAVOqpQFEy20FkF/iVRfAGzg0nw9dxNb4yob13EEAAm2x4NKvV3hB1KMV0ZMGLna5H8PcTvvEZN/b/GIWvQZBlHnhp875LqKtEQvDJTxaRlqhpLHbsbqQlSHeYQcbqBh2s0dhjzmP3E1ChOL3uPOANyufEWl775zZF5C0=
+    git-server ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEMr2khGmpmyutI20kVlqOL+wIHmzWsWga0dBOMITv30m0jS/k0yDRrYffaF87dUrhXy6iMNuHk25fBfKOAO9GY= git-server
+    git-server ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBotd1QsySCfO/TILJkreYHs2XMbGs2J7Y1sUrD94H2/ git-server
+    git-server ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC5C1ryDpU8hKOXygZSS3MXFJVrshMu/XbdbyV4r+CohNfFjGOEX5cGPPsHg+PE32FzE0z55p9RLTF3Z7v2BUL7aSOHuHdIAvcKXKPGZXJ1OpVxF/qmHh1bmjF9USjkVODAfZPflvP72jFP79f2v6yk4VNNqYI8W3SK/YxxqBS+Q/QitydMxusYl+TxB5Bc9rNeY30LEdLSgWg/hL6UKdkpOmqYopasc7FGeDsJdcKbBpE6Cpofu+6LKnXHEpSMxjzvXckbCMvWEmmvkYrlb/UdX7QuG4Rco1FikHYtmquLUhNeb5huGvbbvQc6Q1ZjvqEpG8ENI4GrDHUMmW2sZu4/WXf/TvzkgzOxVCFIHkgdKF/l8eJ2mFjo9ukZaFnNIvUqoegNfb0TvGxZKU8xBxg+lpLGsEcvwpVbZXsnju34J3exJHNUvzis410gVDQJxfGTT2h8eFKExkoLUSszJpj9MqMaHHyU30ub08UrWXiQDx/7ZKjzxuwH/jF5SsdEFNs= git-server
   password: "git-server"
-  public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCeBRD2dNrIZQq6ROpYYZJQi1ex+8DcSB6aM97mT96oZgDBmgUCWXetgvN3NdlqMZZ2AsLY12r3V80HB6wUB7KoynVr0UIEjRxPh32nJbKQ8yMle0ryl1+ymD3PfLkw+CWG5Gg4dHPCP7Lip4vmcuFBTgGjLEEygMECMBPqGoouGkZD+azv+42DMcopI2GHsEzCht16aNpOkjxBLc12KzAATHX2KzlvifvhBdifQy0FHJhvuHWdwymYLZhUTlBNkr+SDpb3bPMc67WPufIepTPHIV638Qx/gCtl16mMXJuvLqQNvMucpB90Ze3mhQrBv1Oj7AAeuTqUSg8QLqdFoEfnRCp4SHvpN5yEPS2w/TryPc9CyFC6PZiGjPnckle0BB0YVRFvWAylaD7Rt2MY2haCqe89TI2hSkibUFkIyjJltatn2HJmd5Hj98mbuV1530TcjhpLNAaQQY5A+pzOCqCPsFZYnDgcjj01F8eweyN+/Cu7qMNtmilRQ6k+V6HKz68="
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: git-server-ssh-credentials
+  namespace: flux-system
+type: Opaque
+stringData:
+  authorized_keys: |
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCeBRD2dNrIZQq6ROpYYZJQi1ex+8DcSB6aM97mT96oZgDBmgUCWXetgvN3NdlqMZZ2AsLY12r3V80HB6wUB7KoynVr0UIEjRxPh32nJbKQ8yMle0ryl1+ymD3PfLkw+CWG5Gg4dHPCP7Lip4vmcuFBTgGjLEEygMECMBPqGoouGkZD+azv+42DMcopI2GHsEzCht16aNpOkjxBLc12KzAATHX2KzlvifvhBdifQy0FHJhvuHWdwymYLZhUTlBNkr+SDpb3bPMc67WPufIepTPHIV638Qx/gCtl16mMXJuvLqQNvMucpB90Ze3mhQrBv1Oj7AAeuTqUSg8QLqdFoEfnRCp4SHvpN5yEPS2w/TryPc9CyFC6PZiGjPnckle0BB0YVRFvWAylaD7Rt2MY2haCqe89TI2hSkibUFkIyjJltatn2HJmd5Hj98mbuV1530TcjhpLNAaQQY5A+pzOCqCPsFZYnDgcjj01F8eweyN+/Cu7qMNtmilRQ6k+V6HKz68=
+  # These keys are only ever used for local testing for a service that is never accessible over the internet
+  ssh_host_ecdsa_key: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAaAAAABNlY2RzYS
+    1zaGEyLW5pc3RwMjU2AAAACG5pc3RwMjU2AAAAQQRDK9pIRpqZsrrSNtJFZaji/sCB5s1r
+    FoGtHQTjCE799JtI0v5NMg0a2H32hfO3VK4V8uojDbh5NuXwXyjgDvRmAAAAqHlIr+x5SK
+    /sAAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEMr2khGmpmyutI2
+    0kVlqOL+wIHmzWsWga0dBOMITv30m0jS/k0yDRrYffaF87dUrhXy6iMNuHk25fBfKOAO9G
+    YAAAAgeAReEz9iF6tHnHFyo6Chw8p2EsGAib0ckuo2zx+4nOoAAAAKZ2l0LXNlcnZlcgEC
+    AwQFBg==
+    -----END OPENSSH PRIVATE KEY-----
+  ssh_host_ecdsa_key.pub: |
+    ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEMr2khGmpmyutI20kVlqOL+wIHmzWsWga0dBOMITv30m0jS/k0yDRrYffaF87dUrhXy6iMNuHk25fBfKOAO9GY= git-server
+  ssh_host_ed25519_key: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+    QyNTUxOQAAACAaLXdULMkgnzv0yCyZK3mB7NlzGxrNie2NbFKw/eB9vwAAAJAqZZqjKmWa
+    owAAAAtzc2gtZWQyNTUxOQAAACAaLXdULMkgnzv0yCyZK3mB7NlzGxrNie2NbFKw/eB9vw
+    AAAEBhUjiozfPPU2vhpoNFoLnZNqVxb3Sftl1gRPXNza/C8Botd1QsySCfO/TILJkreYHs
+    2XMbGs2J7Y1sUrD94H2/AAAACmdpdC1zZXJ2ZXIBAgM=
+    -----END OPENSSH PRIVATE KEY-----
+  ssh_host_ed25519_key.pub: |
+    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBotd1QsySCfO/TILJkreYHs2XMbGs2J7Y1sUrD94H2/ git-server
+  ssh_host_rsa_key: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    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
+    gzR37pvZNwSHkAAAAKZ2l0LXNlcnZlcgE=
+    -----END OPENSSH PRIVATE KEY-----
+  ssh_host_rsa_key.pub: |
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC5C1ryDpU8hKOXygZSS3MXFJVrshMu/XbdbyV4r+CohNfFjGOEX5cGPPsHg+PE32FzE0z55p9RLTF3Z7v2BUL7aSOHuHdIAvcKXKPGZXJ1OpVxF/qmHh1bmjF9USjkVODAfZPflvP72jFP79f2v6yk4VNNqYI8W3SK/YxxqBS+Q/QitydMxusYl+TxB5Bc9rNeY30LEdLSgWg/hL6UKdkpOmqYopasc7FGeDsJdcKbBpE6Cpofu+6LKnXHEpSMxjzvXckbCMvWEmmvkYrlb/UdX7QuG4Rco1FikHYtmquLUhNeb5huGvbbvQc6Q1ZjvqEpG8ENI4GrDHUMmW2sZu4/WXf/TvzkgzOxVCFIHkgdKF/l8eJ2mFjo9ukZaFnNIvUqoegNfb0TvGxZKU8xBxg+lpLGsEcvwpVbZXsnju34J3exJHNUvzis410gVDQJxfGTT2h8eFKExkoLUSszJpj9MqMaHHyU30ub08UrWXiQDx/7ZKjzxuwH/jF5SsdEFNs= git-server
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: git-server-entrypoint
+  namespace: flux-system
+data:
+  00-load-keys.sh: |
+    mkdir -p /home/git/.ssh
+    cp /tmp/ssh/authorized_keys /home/git/.ssh/authorized_keys
+    cp /tmp/ssh/ssh_host* /etc/ssh
+    chmod 0600 /etc/ssh/ssh_host_ecdsa_key
+    chmod 0600 /etc/ssh/ssh_host_ed25519_key
+    chmod 0600 /etc/ssh/ssh_host_rsa_key
+    

@@ -1,9 +1,9 @@
 #![warn(clippy::all)]
 
+use settings::SETTINGS;
 use std::error::Error;
 use std::panic;
 use tokio::net::TcpListener;
-use settings::SETTINGS;
 
 use crate::daos::kafka::PRODUCER;
 use crate::paths::notification::app;

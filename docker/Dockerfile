@@ -1,4 +1,4 @@
-FROM rust:1.76-alpine as builder
+FROM rust:1.76-alpine AS builder
 RUN apk add --no-cache build-base perl
 
 WORKDIR /app
@@ -6,7 +6,7 @@ COPY rust-toolchain.toml .
 RUN rustup component add clippy rustfmt
 
 
-FROM builder as dependencyBuilder
+FROM builder AS dependency_builder
 WORKDIR /app
 
 ENV CRATES="common director distributor receiver"
@@ -23,10 +23,10 @@ COPY --link "crates/receiver/Cargo.toml" crates/receiver/Cargo.toml
 RUN cargo build --color "auto" --release --locked
 
 
-FROM builder as applicationBuilder
+FROM builder AS application_builder
 WORKDIR /app
 
-COPY --from=dependencybuilder /app/target target
+COPY --from=dependency_builder /app/target target
 RUN find target -name '*saasaparilla*' -type f -delete
 COPY . .
 # TODO: add https://github.com/qdrant/qdrant/pull/1856/files as a just script to increase speed of multistage build
@@ -40,19 +40,19 @@ RUN cargo build --future-incompat-report --color "auto" --bin "${COMPONENT_BIN}"
 
 
 # https://hub.docker.com/_/rust
-FROM alpine:3.19 as final
+FROM alpine:3.19 AS final
 WORKDIR /app
 
 COPY --link LICENSE /app/LICENSE
 
 ARG COMPONENT
 ENV COMPONENT_BIN="saasaparilla-notification-${COMPONENT}"
-COPY --from=applicationbuilder --link "/app/target/release/${COMPONENT_BIN}" "/app/bin"
+COPY --from=application_builder --link "/app/target/release/${COMPONENT_BIN}" "/app/bin"
 COPY --link "crates/${COMPONENT}/config.toml" "/app/config.toml"
 CMD ["/app/bin", "config-file-path=config.toml"]
 
 
-FROM scratch as minimal
+FROM scratch AS minimal
 WORKDIR /app
 
 # generate the list of required libs with `ldd /app/bin`
