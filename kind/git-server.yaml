@@ -101,7 +101,7 @@ metadata:
   name: git-server
   namespace: flux-system
 spec:
-  interval: 1m0s
+  interval: 0m2s
   ref:
     branch: master
   secretRef:
