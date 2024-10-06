@@ -101,9 +101,9 @@ metadata:
   name: git-server
   namespace: flux-system
 spec:
-  interval: 1m0s
+  interval: 0m2s
   ref:
-    branch: master
+    branch: main
   secretRef:
     name: flux-git-ssh-credentials
   url: ssh://git@git-server:22/srv/git

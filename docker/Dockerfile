@@ -1,3 +1,4 @@
+# syntax=docker.io/docker/dockerfile:1.10-labs
 FROM rust:1.76-alpine AS builder
 RUN apk add --no-cache build-base perl
 
@@ -13,12 +14,12 @@ ENV CRATES="common director distributor receiver"
 RUN printf "${CRATES}" | tr ' ' '\n' | xargs -I{} sh -c 'mkdir -p crates/{}/src && echo "fn main() { }" > crates/{}/src/main.rs && touch crates/{}/src/lib.rs'
 
 # awaiting release of https://github.com/moby/buildkit/pull/3001
-#COPY --parents --link ./Cargo.* ./crates/*/Cargo.toml ./
-COPY --link "Cargo.lock" "Cargo.toml" ./
-COPY --link "crates/common/Cargo.toml" crates/common/Cargo.toml
-COPY --link "crates/director/Cargo.toml" crates/director/Cargo.toml
-COPY --link "crates/distributor/Cargo.toml" crates/distributor/Cargo.toml
-COPY --link "crates/receiver/Cargo.toml" crates/receiver/Cargo.toml
+COPY --parents --link **/Cargo.* .
+#COPY --link "Cargo.lock" "Cargo.toml" ./
+#COPY --link "crates/common/Cargo.toml" crates/common/Cargo.toml
+#COPY --link "crates/director/Cargo.toml" crates/director/Cargo.toml
+#COPY --link "crates/distributor/Cargo.toml" crates/distributor/Cargo.toml
+#COPY --link "crates/receiver/Cargo.toml" crates/receiver/Cargo.toml
 
 RUN cargo build --color "auto" --release --locked
 

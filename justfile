@@ -1,4 +1,5 @@
-default: lint build test
+default:
+    just --list
 
 lint:
     echo Linting...
@@ -61,7 +62,7 @@ deploy-kind:
     #TODO: await service reconciliation
     #TODO: run integration tests
 
-generate-flux-system-yaml: run-kind
+generate-flux-system-yaml:
     flux install --context kind-saasaparilla-notification --namespace=flux-system --watch-all-namespaces=false --export > kind/flux-install.yaml
 
 shutdown-kind:
