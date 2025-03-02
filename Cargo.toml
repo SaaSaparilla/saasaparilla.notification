@@ -5,8 +5,8 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-axum = "0.7.4"
-config = "0.14.0"
+axum = "0.8.1"
+config = "0.15.8"
 eyre = "0.6.8"
 http-body-util = "0.1.0"
 kafka = "0.10.0"
@@ -15,9 +15,9 @@ openssl = { version = "0.10.66", features = ["vendored"] } #https://users.rust-l
 reqwest = { version = "0.12.5", default-features = false, features = ["json", "gzip", "rustls-tls"] }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0.107"
-thiserror = "1.0.50"
+thiserror = "2.0.11"
 tokio = { version = "1.33.0", features = ["full"] }
-tower = "0.4.13"
+tower = { version = "0.5.2", features = ["util"] }
 tracing = "0.1.40"
 url = "2.4.1"
 
@@ -26,7 +26,7 @@ saasaparilla_notification_common = { path = "crates/common" }
 
 [workspace.package]
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 license = "GPL-3.0-or-later"
 authors = ["Nyefan"]
 homepage = "https://github.com/SaaSaparilla/saasaparilla.notification"
