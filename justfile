@@ -53,17 +53,17 @@ run-docker: docker-build-all
 
 run-kind: docker-build-all
     echo Deploying kind cluster...
-    kind create cluster --config kind/cluster.yaml --name saasaparilla-notification --wait 5m
+    kind create cluster --config kind/bootstrap/cluster.yaml --name saasaparilla-notification --wait 5m
 
 deploy-kind:
-    yq 'select(.kind=="CustomResourceDefinition")' kind/flux-install.yaml | kubectl --context kind-saasaparilla-notification apply -f -
-    yq 'select(.kind!="CustomResourceDefinition")' kind/flux-install.yaml | kubectl --context kind-saasaparilla-notification apply -f -
-    kubectl --context kind-saasaparilla-notification apply -f kind/git-server.yaml
+    yq 'select(.kind=="CustomResourceDefinition")' kind/bootstrap/flux-install.yaml | kubectl --context kind-saasaparilla-notification apply -f -
+    yq 'select(.kind!="CustomResourceDefinition")' kind/bootstrap/flux-install.yaml | kubectl --context kind-saasaparilla-notification apply -f -
+    kubectl --context kind-saasaparilla-notification apply -f kind/bootstrap/git-server.yaml
     #TODO: await service reconciliation
     #TODO: run integration tests
 
 generate-flux-system-yaml:
-    flux install --context kind-saasaparilla-notification --namespace=flux-system --watch-all-namespaces=false --export > kind/flux-install.yaml
+    flux install --context kind-saasaparilla-notification --namespace=flux-system --watch-all-namespaces=false --export > kind/bootstrap/flux-install.yaml
 
 shutdown-kind:
     kind delete cluster --name saasaparilla-notification

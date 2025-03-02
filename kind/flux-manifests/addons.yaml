@@ -1,0 +1,4 @@
+#TODO: harbor (oci registry)
+#TODO: brixt (gateway/ingress controller)
+#TODO: crossplane or tekton? (job runner/container builder)
+#TODO: something to trigger a rebuild whenever the gitrepository is updated (does flux sourcecontroller emit events?)
