@@ -24,7 +24,7 @@ spec:
                     operator: Exists
       containers:
         - name: git-server
-          image: rockstorm/git-server
+          image: rockstorm/git-server:2.47
           env:
             - name: SSH_AUTH_METHODS
               value: "publickey"
