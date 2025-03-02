@@ -23,3 +23,12 @@ url = "2.4.1"
 
 # local dependencies
 saasaparilla_notification_common = { path = "crates/common" }
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+authors = ["Nyefan"]
+homepage = "https://github.com/SaaSaparilla/saasaparilla.notification"
+repository = "https://github.com/SaaSaparilla/saasaparilla.notification"
+readme = "README.md"

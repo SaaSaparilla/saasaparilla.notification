@@ -1,5 +1,5 @@
 # syntax=docker.io/docker/dockerfile:1.10-labs
-FROM rust:1.76-alpine AS builder
+FROM rust:1.85-alpine AS builder
 RUN apk add --no-cache build-base perl
 
 WORKDIR /app
@@ -41,7 +41,7 @@ RUN cargo build --future-incompat-report --color "auto" --bin "${COMPONENT_BIN}"
 
 
 # https://hub.docker.com/_/rust
-FROM alpine:3.19 AS final
+FROM alpine:3.20 AS final
 WORKDIR /app
 
 COPY --link LICENSE /app/LICENSE
