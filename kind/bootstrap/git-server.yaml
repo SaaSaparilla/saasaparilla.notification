@@ -15,13 +15,6 @@ spec:
       labels:
         app: git-server
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: "node-role.kubernetes.io/control-plane"
-                    operator: Exists
       containers:
         - name: git-server
           image: rockstorm/git-server:2.47
@@ -39,6 +32,9 @@ spec:
             - mountPath: /docker-entrypoint.d/00-load-keys.sh
               subPath: 00-load-keys.sh
               name: entrypoint
+      nodeSelector:
+        kubernetes.io/os: linux
+        node-role.kubernetes.io/control-plane: ""
       securityContext:
         fsGroup: 1000
       tolerations:

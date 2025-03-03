@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: flux-system
+resources:
+  - flux-install.yaml
+  - git-server.yaml
+  - flux-manifests.yaml
+patches:
+  - patch: |-
+      kind: ignored
+      metadata:
+        name: ignored
+      spec:
+        template:
+          spec:
+            tolerations:
+              - key: "node-role.kubernetes.io/control-plane"
+                operator: Exists
+            nodeSelector:
+              node-role.kubernetes.io/control-plane: ""
+    target:
+      kind: (StatefulSet|Deployment|Job)

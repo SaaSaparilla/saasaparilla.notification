@@ -5,9 +5,14 @@ name: saasaparilla-notification
 nodes:
   - role: control-plane
     image: kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
-    extraMounts:
+    extraMounts: # hoist the local git repository into the cluster
       - hostPath: .
         containerPath: /git
+    extraPortMappings: # these are required for nginx-ingress, but can be removed after replacing with brixt
+      - containerPort: 80
+        hostPort: 80
+      - containerPort: 443
+        hostPort: 443
   - role: worker
     image: kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
   - role: worker
