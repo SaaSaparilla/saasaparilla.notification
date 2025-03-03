@@ -19,7 +19,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m #this only hits the locally cached chart registry
-  timeout: 5m
+  timeout: 1m
   chart:
     spec:
       chart: ingress-nginx

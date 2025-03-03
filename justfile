@@ -54,6 +54,7 @@ run-docker: docker-build-all
 run-kind: docker-build-all
     echo Deploying kind cluster...
     kind create cluster --config kind/cluster.yaml --name saasaparilla-notification --wait 5m
+    docker run --name saasaparilla-notification-cloud-provider-kind --rm --network kind -v /var/run/docker.sock:/var/run/docker.sock registry.k8s.io/cloud-provider-kind/cloud-controller-manager:v0.6.0
 
 deploy-kind:
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/
@@ -66,3 +67,4 @@ generate-flux-system-yaml:
 
 shutdown-kind:
     kind delete cluster --name saasaparilla-notification
+    docker stop saasaparilla-notification-cloud-provider-kind
