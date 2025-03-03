@@ -51,16 +51,13 @@ run-docker: docker-build-all
     docker-compose --file ./docker/docker-compose.yaml up
     docker-compose --file ./docker/docker-compose.yaml down
 
-run-kind: docker-build-all
+run-kind:
     echo Deploying kind cluster...
     kind create cluster --config kind/cluster.yaml --name saasaparilla-notification --wait 5m
-    docker run --name saasaparilla-notification-cloud-provider-kind --rm --network kind -v /var/run/docker.sock:/var/run/docker.sock registry.k8s.io/cloud-provider-kind/cloud-controller-manager:v0.6.0
-
-deploy-kind:
-    kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/
+    docker run --name saasaparilla-notification-cloud-provider-kind --rm --detach --network kind -v /var/run/docker.sock:/var/run/docker.sock registry.k8s.io/cloud-provider-kind/cloud-controller-manager:v0.6.0
+    kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ ||\
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ #do this twice to apply the custom resources
-    #TODO: await service reconciliation
-    #TODO: run integration tests
+    kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' service/ingress-nginx-controller --namespace ingress-nginx
 
 generate-flux-system-yaml:
     flux install --context kind-saasaparilla-notification --namespace=flux-system --watch-all-namespaces=false --export > kind/bootstrap/flux-install.yaml
