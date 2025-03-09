@@ -5,13 +5,15 @@
 * service can be deployed in a sensible default configuration in an existing k8s cluster or locally (for testing 
   purposes) using:
   * `helm install`
-  * `docker-compose up`
+  * `just run-kind`
 * service supports client connections using sockets, sse, and http long polling
 * service can scale horizontally sufficiently to handle 1M messages/second across 100M clients
 * service exposes prometheus metrics
 * service chart relies on the [prometheus-adapter](https://github.com/kubernetes-sigs/prometheus-adapter) for scaling metrics
-* blast radius of any service being temporarily unavailable for less than 10 minutes does not include data loss
-* backing services incl. `postgres`, `kafka`, and `garnet (redis)` can be managed either in k8s or docker-compose using `pulumi`
+* blast radius of any one service being temporarily unavailable for less than 10 minutes does not include data loss
+* for the purpose of the above, failure to generate data is not considered data loss
+* backing services incl. `kafka` and `garnet (redis)` can be deployed to k8s using manifest bundles _or_ plugged in
+  using environment variables
 
 ### Installation Prerequisites
 
@@ -26,7 +28,9 @@
 * `just test`
 * `just release`
 * `just docker-build-all`
-* `just docker-run`
+* `just run-kind`
+* `just shutdown-kind`
+* `just build-d2-diagrams`
 
 #### Build Prerequisites
 
@@ -55,10 +59,13 @@ The receiver service is responsible for ensuring that:
 The director service is responsible for ensuring that:
 * consumed messages from kafka are sent to the distributor(s) holding the connection(s) to the receiving client(s)
 * consumed messages that fail to reach their intended destination are retried
-* consumed messages that fail after an appropriate number of retries are stored for retrieval in postgres
+* consumed messages that fail after an appropriate number of retries are stored for retrieval in redis
 
 #### Distributor
 The distributor service is responsible for ensuring that:
 * the client connection list in redis remains up to date
 * forwarding messages received from the director service to the appropriate client(s)
-* retrieving messages from postgres and sending them to clients in the order received when a connection is established BEFORE sending any new messages
+* retrieving messages from redis and sending them to clients in the order received when a connection is established 
+  BEFORE sending any new messages
+
+![High Level Architecture Diagram](architecture/diagrams/Architecture.svg)

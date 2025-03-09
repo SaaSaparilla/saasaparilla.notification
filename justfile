@@ -57,6 +57,7 @@ run-kind:
     docker run --name saasaparilla-notification-cloud-provider-kind --rm --detach --network kind -v /var/run/docker.sock:/var/run/docker.sock registry.k8s.io/cloud-provider-kind/cloud-controller-manager:v0.6.0
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ ||\
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ #do this twice to apply the custom resources
+    kubectl wait --for=jsonpath='{.status.phase}'=Active namespace/ingress-nginx
     kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' service/ingress-nginx-controller --namespace ingress-nginx
 
 generate-flux-system-yaml:
@@ -65,3 +66,6 @@ generate-flux-system-yaml:
 shutdown-kind:
     kind delete cluster --name saasaparilla-notification
     docker stop saasaparilla-notification-cloud-provider-kind
+
+build-d2-diagrams:
+    d2 architecture/diagrams.d2

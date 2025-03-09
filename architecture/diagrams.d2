@@ -1,0 +1,223 @@
+direction: right
+
+vars: {
+  d2-config: {
+    layout-engine: elk
+    # Terminal theme code
+    theme-id: 8
+  }
+}
+
+layers: {
+  Architecture: {
+    direction: right
+    application -> saasaparilla\.notification.receiver
+
+    saasaparilla\.notification: {
+      receiver
+      director
+      distributor
+      redis: {shape: cylinder}
+      kafka: {shape: queue}
+      receiver -> kafka -> director -> distributor
+      director <-> redis <-> distributor
+    }
+
+    user: {shape: person}
+
+    saasaparilla\.notification.distributor -> user
+  }
+
+  'High number of connections; low throughput per connection': {
+    direction: right
+    application -> saasaparilla\.notification.receivers
+
+    saasaparilla\.notification: {
+      receivers: {
+        1: receiver
+        2: receiver
+        3: receiver
+      }
+      directors: {
+        1: director
+        2: director
+        3: director
+      }
+      distributors: {
+        1: distributor
+        2: distributor
+        3: distributor
+        4: distributor
+        5: distributor
+        6: distributor
+      }
+      redis: {shape: cylinder}
+      kafka: {shape: queue}
+      receivers -> kafka -> directors -> distributors
+      directors <-> redis <-> distributors
+    }
+
+    users: {
+      1: user
+      2: user
+      3: user
+      4: user
+      5: user
+      6: user
+      7: user
+      8: user
+      9: user
+      10: user
+      11: user
+      12: user
+      *.shape: person
+    }
+
+    saasaparilla\.notification.distributors -> users.*
+  }
+
+  'High number of connections; High throughput per connection; One notification to one subscriber': {
+    direction: right
+    application -> saasaparilla\.notification.receivers
+
+    saasaparilla\.notification: {
+      receivers: {
+        1: receiver
+        2: receiver
+        3: receiver
+        4: receiver
+        5: receiver
+        6: receiver
+      }
+      directors: {
+        1: director
+        2: director
+        3: director
+        4: director
+        5: director
+        6: director
+      }
+      distributors: {
+        1: distributor
+        2: distributor
+        3: distributor
+        4: distributor
+        5: distributor
+        6: distributor
+      }
+      redis: {shape: cylinder}
+      kafka: {shape: queue}
+      receivers -> kafka -> directors -> distributors
+      directors <-> redis <-> distributors
+    }
+
+    users: {
+      1: user
+      2: user
+      3: user
+      4: user
+      5: user
+      6: user
+      7: user
+      8: user
+      9: user
+      10: user
+      11: user
+      12: user
+      *.shape: person
+    }
+
+    saasaparilla\.notification.distributors -> users.*
+  }
+
+  'High number of connections; High throughput per connection; One notification to many subscribers': {
+    direction: right
+    application -> saasaparilla\.notification.receivers
+
+    saasaparilla\.notification: {
+      receivers: {
+        1: receiver
+        2: receiver
+        3: receiver
+      }
+      directors: {
+        1: director
+        2: director
+        3: director
+        4: director
+        5: director
+        6: director
+      }
+      distributors: {
+        1: distributor
+        2: distributor
+        3: distributor
+        4: distributor
+        5: distributor
+        6: distributor
+      }
+      redis: {shape: cylinder}
+      kafka: {shape: queue}
+      receivers -> kafka -> directors
+      directors -> distributors
+      directors <-> redis <-> distributors
+    }
+
+    users: {
+      1: user
+      2: user
+      3: user
+      4: user
+      5: user
+      6: user
+      7: user
+      8: user
+      9: user
+      10: user
+      11: user
+      12: user
+      *.shape: person
+    }
+
+    saasaparilla\.notification.distributors -> users.*
+  }
+
+  'High number of connections at peak; High throughput per connection; One notification to one subscriber; off hours': {
+    direction: right
+    application -> saasaparilla\.notification.receivers
+
+    saasaparilla\.notification: {
+      receivers: {
+        1: receiver
+        2: receiver
+        3: receiver
+      }
+      directors: {
+        1: director
+        2: director
+        3: director
+        4: director
+        5: director
+        6: director
+      }
+      distributors: {
+        1: distributor
+        2: distributor
+        3: distributor
+      }
+      redis: {shape: cylinder}
+      kafka: {shape: queue}
+      receivers -> kafka -> directors -> distributors
+      directors <-> redis <-> distributors
+    }
+
+    users: {
+      1: user
+      2: user
+      3: user
+      *.shape: person
+    }
+
+    saasaparilla\.notification.distributors -> users.*
+  }
+}
