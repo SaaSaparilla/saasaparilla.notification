@@ -21,6 +21,7 @@ pub(crate) static PRODUCER: LazyLock<Mutex<Producer>> = LazyLock::new(|| {
     )
 });
 
+#[fastrace::trace]
 pub fn create_v1(notification: &NotificationV1) -> Result<(), Box<dyn Error>> {
     let settings = &SETTINGS;
     let producer = &PRODUCER;

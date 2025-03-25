@@ -1,11 +1,11 @@
-use axum::http::StatusCode;
-use axum::Json;
-
 use crate::daos::kafka;
+use poem::http::StatusCode;
+use poem::web::Json;
 
 use saasaparilla_notification_common::types::notification::NotificationV1;
 
-// TODO: push to kafka topic
+#[poem::handler]
+#[fastrace::trace]
 pub(crate) async fn create_v1(
     Json(payload): Json<NotificationV1>,
 ) -> Result<Json<NotificationV1>, StatusCode> {

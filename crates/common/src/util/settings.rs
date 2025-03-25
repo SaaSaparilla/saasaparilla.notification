@@ -4,6 +4,7 @@ use std::env;
 use std::fmt::Debug;
 
 // TODO: switch to figment+clap
+#[fastrace::trace]
 pub fn retrieve_config<T: Debug + for<'de> Deserialize<'de>>(
     prefix: &str,
 ) -> Result<T, ConfigError> {

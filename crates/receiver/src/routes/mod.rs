@@ -1,3 +1,6 @@
 pub(crate) mod notification;
 
-pub(crate) async fn health() {}
+#[poem::handler]
+pub(crate) async fn health() {
+    ()
+}

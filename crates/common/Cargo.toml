@@ -10,12 +10,6 @@ repository.workspace = true
 readme.workspace = true
 
 [dependencies]
-eyre.workspace = true
 config.workspace = true
-once_cell.workspace = true
-reqwest.workspace = true
+fastrace.workspace = true
 serde.workspace = true
-thiserror.workspace = true
-tokio.workspace = true
-tracing.workspace = true
-url.workspace = true

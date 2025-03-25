@@ -1,32 +1,13 @@
-use axum::{
-    body::Body,
-    http::{Request, StatusCode},
-};
-use http_body_util::BodyExt;
-use tower::ServiceExt;
+use poem::test::TestClient;
 
 use saasaparilla_notification_receiver::app;
 
 #[tokio::test]
 async fn health() {
-    let app = app();
+    let test_client = TestClient::new(app());
 
-    let response = app
-        .oneshot(
-            Request::builder()
-                .uri("/healthz")
-                .body(Body::empty())
-                .unwrap(),
-        )
-        .await
-        .unwrap();
+    let response = test_client.get("/healthz").send().await;
 
-    assert_eq!(StatusCode::OK, response.status());
-    assert!(response
-        .into_body()
-        .collect()
-        .await
-        .unwrap()
-        .to_bytes()
-        .is_empty());
+    response.assert_status_is_ok();
+    response.assert_bytes("").await;
 }

@@ -1,14 +1,15 @@
-use axum::routing::{get, post};
-use axum::Router;
-
 use crate::routes;
+use fastrace_poem;
+use poem::{Endpoint, EndpointExt, Route};
+use poem::{get, post};
 
-pub fn app() -> Router {
-    Router::new()
-        .route("/healthz", get(routes::health))
+pub fn app() -> impl Endpoint {
+    Route::new()
+        .at("/healthz", get(routes::health))
         // TODO: add appropriate request validation to k8s Ingress and CiliumNetworkPolicy objects
-        .route(
+        .at(
             "/api/v1/notification",
             post(routes::notification::create_v1),
         )
+        .with(fastrace_poem::FastraceMiddleware)
 }

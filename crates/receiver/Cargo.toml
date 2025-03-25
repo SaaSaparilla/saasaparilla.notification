@@ -9,25 +9,18 @@ repository.workspace = true
 readme.workspace = true
 
 [dependencies]
-axum.workspace = true
-config.workspace = true
-eyre.workspace = true
+fastrace.workspace = true
+fastrace-poem.workspace = true
 kafka.workspace = true
-once_cell.workspace = true
 openssl.workspace = true
-reqwest.workspace = true
+poem.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-thiserror.workspace = true
 tokio.workspace = true
-tower.workspace = true
-tracing.workspace = true
-url.workspace = true
 
 # local dependencies
 saasaparilla_notification_common.workspace = true
 
 [dev-dependencies]
-http-body-util.workspace = true
+poem = { version = "3.1.8", features = ["test"]}
 serde_json.workspace = true
-tower.workspace = true
