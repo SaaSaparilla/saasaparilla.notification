@@ -1,0 +1,79 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: bitnami-kafka
+  namespace: flux-system
+spec:
+  interval: 1h #minimize impact on bitnami's servers - users can `flux reconcile` if they manually screw with something
+  url: oci://registry-1.docker.io/bitnamicharts/kafka
+  ref:
+    tag: "32.1.1"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kafka
+  namespace: flux-system
+spec:
+  interval: 10m #this only hits the locally cached chart registry
+  timeout: 5m
+  chartRef:
+    kind: OCIRepository
+    name: bitnami-kafka
+  releaseName: kafka
+  targetNamespace: kafka
+  storageNamespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  test:
+    enable: false
+  driftDetection:
+    mode: enabled
+  values:
+    controller:
+      persistence:
+        size: "512Mi"
+      resources:
+        requests:
+          cpu: 100m
+          ephemeral-storage: 50Mi
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          ephemeral-storage: 1Gi
+          memory: 1Gi
+      resourcesPreset: "micro"
+    broker:
+      persistence:
+        size: "512Mi"
+      resources:
+        requests:
+          cpu: 100m
+          ephemeral-storage: 50Mi
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          ephemeral-storage: 1Gi
+          memory: 1Gi
+      service:
+        type: "ClusterIP"
+    externalAccess:
+      enabled: false
+      service:
+        type: "ClusterIP"
+    provisioning:
+      enabled: true
+      topics:
+        - name: "saasaparilla_notification_received"
+          partitions: 1
+          replicationFactor: 1
+          config:
+            max.message.bytes: 64000
+            flush.messages: 1
+    namespaceOverride: "kafka"
+---
