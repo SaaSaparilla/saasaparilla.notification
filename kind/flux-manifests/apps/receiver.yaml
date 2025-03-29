@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: notification-receiver
+  namespace: default
+  labels:
+    app: notification-receiver
+spec:
+  containers:
+    - name: notification-receiver
+      image: saasaparilla/notification/receiver:latest
+      ports:
+        - containerPort: 8080
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"

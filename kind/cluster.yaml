@@ -5,9 +5,15 @@ name: saasaparilla-notification
 nodes:
   - role: control-plane
     image: kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
-    extraMounts: # hoist the local git repository into the cluster
+    extraMounts:
+      # hoist the local git repository into the cluster
       - hostPath: .
         containerPath: /git
+      # proxy 3rd party registries
+      - hostPath: ./kind/_default
+        containerPath: /etc/containerd/certs.d/_default
+      - hostPath: /run/containerd/containerd.sock
+        containerPath: /run/containerd/host_containerd.sock
     extraPortMappings: # these are required for nginx-ingress, but can be removed after replacing with brixt
       - containerPort: 80
         hostPort: 80
@@ -19,3 +25,7 @@ nodes:
     image: kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
   - role: worker
     image: kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      config_path = "/etc/containerd/certs.d"

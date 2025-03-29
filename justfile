@@ -58,6 +58,7 @@ run-kind:
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ ||\
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ #do this twice to apply the custom resources
     kubectl --context kind-saasaparilla-notification wait --for=create namespace/ingress-nginx
+    kubectl --context kind-saasaparilla-notification wait --for=create service/ingress-nginx-controller --namespace ingress-nginx
     kubectl --context kind-saasaparilla-notification wait --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' service/ingress-nginx-controller --namespace ingress-nginx
 
 generate-flux-system-yaml:
@@ -70,7 +71,3 @@ shutdown-kind:
 build-d2-diagrams:
     d2 architecture/diagrams.d2
 
-recreate-kafka:
-    kubectl --context kind-saasaparilla-notification delete helmrelease -n flux-system kafka
-    kubectl --context kind-saasaparilla-notification delete namespace kafka
-    flux --context kind-saasaparilla-notification reconcile kustomization flux-manifests
