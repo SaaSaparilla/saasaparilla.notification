@@ -4,3 +4,4 @@ namespace: flux-system
 resources:
   - addons/nginx-ingress-controller.yaml
   - addons/bitnami-kafka.yaml
+  - addons/local-registry-hosting.yaml

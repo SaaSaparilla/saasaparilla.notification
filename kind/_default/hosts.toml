@@ -1,0 +1,4 @@
+# see https://github.com/containerd/containerd/blob/main/core/remotes/docker/config/hosts.go#L318 for a complete list of options
+[host."http://saasaparilla-notification-registry:5000"]
+  capabilities = ["pull", "resolve"]
+  skip_verify = true
