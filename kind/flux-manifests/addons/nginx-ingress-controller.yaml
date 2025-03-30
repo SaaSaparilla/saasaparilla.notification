@@ -38,17 +38,24 @@ spec:
   driftDetection:
     mode: enabled
   values:
-    controller.nodeSelector: 'node-role.kubernetes.io/control-plane: ""'
-    controller.tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: Exists
-    controller.admissionWebhooks.patch.nodeSelector: 'node-role.kubernetes.io/control-plane: ""'
-    controller.admissionWebhooks.patch.tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: Exists
-    defaultBackend.nodeSelector: 'node-role.kubernetes.io/control-plane: ""'
-    defaultBackend.tolerations:
-      - key: "node-role.kubernetes.io/control-plane"
-        operator: Exists
+    controller:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: Exists
+      admissionWebhooks:
+        patch:
+          nodeSelector:
+            node-role.kubernetes.io/control-plane: ""
+          tolerations:
+            - key: "node-role.kubernetes.io/control-plane"
+              operator: Exists
+    defaultBackend:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: Exists
     namespaceOverride: "ingress-nginx"
 ---
