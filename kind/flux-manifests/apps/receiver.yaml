@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: saasaparilla-notification
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: saasaparilla-notification-receiver
+  namespace: saasaparilla-notification
+  labels:
+    app: saasaparilla-notification-receiver
+spec:
+  containers:
+    - name: saasaparilla-notification-receiver
+      image: localhost:5000/saasaparilla/notification/receiver:latest
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: saasaparilla-notification
+spec:
+  type: ExternalName
+  externalName: kafka.kafka.svc.cluster.local
