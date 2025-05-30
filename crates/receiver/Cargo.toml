@@ -16,6 +16,7 @@ openssl.workspace = true
 poem.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+signal-hook.workspace = true
 tokio.workspace = true
 
 # local dependencies

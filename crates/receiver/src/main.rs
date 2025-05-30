@@ -6,7 +6,8 @@ use fastrace::collector::{Config, ConsoleReporter};
 use poem::listener::TcpListener;
 use settings::SETTINGS;
 use std::error::Error;
-use std::panic;
+use std::{io, panic};
+use std::time::Duration;
 
 mod daos;
 mod paths;
@@ -28,10 +29,25 @@ pub(crate) async fn main() -> Result<(), Box<dyn Error>> {
         settings.server.network_interface, settings.server.port
     ));
 
-    poem::Server::new(listener).run(app()).await.unwrap();
+    poem::Server::new(listener)
+        .run_with_graceful_shutdown(
+            app(),
+            async move {
+                let _ = sigterm().await;
+                println!("Terminating");
+            },
+            Some(Duration::from_secs(1)),
+        )
+        .await
+        .unwrap();
 
     // write any pending logs before exiting
     fastrace::flush();
+    Ok(())
+}
+
+pub async fn sigterm() -> io::Result<()> {
+    tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())?.recv().await;
     Ok(())
 }
 

@@ -35,6 +35,9 @@ spec:
   driftDetection:
     mode: enabled
   values:
+    listeners:
+      client:
+        protocol: "PLAINTEXT"
     controller:
       persistence:
         size: "512Mi"

@@ -7,14 +7,22 @@ metadata:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: saasaparilla-notification-receiver
+  name: saasaparilla-notification
   namespace: saasaparilla-notification
   labels:
-    app: saasaparilla-notification-receiver
+    app: saasaparilla-notification
 spec:
   containers:
-    - name: saasaparilla-notification-receiver
+    - name: receiver
       image: localhost:5000/saasaparilla/notification/receiver:latest
+      ports:
+        - containerPort: 8080
+    - name: director
+      image: localhost:5000/saasaparilla/notification/director:latest
+      ports:
+        - containerPort: 8080
+    - name: distributor
+      image: localhost:5000/saasaparilla/notification/distributor:latest
       ports:
         - containerPort: 8080
 ---
