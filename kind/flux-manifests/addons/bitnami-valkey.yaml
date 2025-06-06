@@ -1,0 +1,45 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: bitnami-valkey
+  namespace: flux-system
+spec:
+  interval: 1h #minimize impact on bitnami's servers - users can `flux reconcile` if they manually screw with something
+  url: oci://registry-1.docker.io/bitnamicharts/valkey
+  ref:
+    tag: "3.0.9"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: valkey
+  namespace: flux-system
+spec:
+  interval: 10m #this only hits the locally cached chart registry
+  timeout: 5m
+  chartRef:
+    kind: OCIRepository
+    name: bitnami-valkey
+  releaseName: valkey
+  targetNamespace: valkey
+  storageNamespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  test:
+    enable: false
+  driftDetection:
+    mode: enabled
+  values:
+    auth:
+      enabled: false
+    primary:
+      resourcesPreset: "micro"
+    replica:
+      resourcesPreset: "micro"
+    namespaceOverride: "valkey"
+---

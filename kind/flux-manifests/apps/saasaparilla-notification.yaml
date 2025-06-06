@@ -136,11 +136,20 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
+  name: valkey-primary
   namespace: saasaparilla-notification
 spec:
   type: ExternalName
-  externalName: redis.redis.svc.cluster.local
+  externalName: valkey-primary.valkey.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: valkey-replicas
+  namespace: saasaparilla-notification
+spec:
+  type: ExternalName
+  externalName: valkey-replicas.valkey.svc.cluster.local
 ---
 apiVersion: v1
 kind: Service
