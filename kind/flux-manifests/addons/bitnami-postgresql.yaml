@@ -1,0 +1,48 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: bitnami-postgresql
+  namespace: flux-system
+spec:
+  interval: 1h #minimize impact on bitnami's servers - users can `flux reconcile` if they manually screw with something
+  url: oci://registry-1.docker.io/bitnamicharts/postgresql
+  ref:
+    tag: "16.7.10"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: postgresql
+  namespace: flux-system
+spec:
+  interval: 10m #this only hits the locally cached chart registry
+  timeout: 5m
+  chartRef:
+    kind: OCIRepository
+    name: bitnami-postgresql
+  releaseName: postgresql
+  targetNamespace: postgresql
+  storageNamespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  test:
+    enable: false
+  driftDetection:
+    mode: enabled
+  values:
+    auth:
+      postgresPassword: "admin_password"
+      username: "saasaparilla_notification_service_account"
+      password: "saasaparilla_notification_password"
+      database: "saasaparilla_notification"
+    primary:
+      resourcesPreset: "micro"
+    readReplicas:
+      resourcesPreset: "micro"
+    namespaceOverride: "postgresql"
+---

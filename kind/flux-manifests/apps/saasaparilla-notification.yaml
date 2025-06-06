@@ -154,8 +154,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: postgresql
   namespace: saasaparilla-notification
 spec:
   type: ExternalName
-  externalName: postgres.postgres.svc.cluster.local
+  externalName: postgresql.postgresql.svc.cluster.local

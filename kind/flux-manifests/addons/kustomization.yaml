@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - bitnami-kafka.yaml
+  - bitnami-postgresql.yaml
   - bitnami-valkey.yaml
   - local-registry-hosting.yaml
   - metrics-server.yaml
