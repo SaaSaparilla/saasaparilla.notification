@@ -1,0 +1,90 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: kafka-ui
+  namespace: flux-system
+spec:
+  interval: 1h #minimize impact on GitHub's servers - users can `flux reconcile` if they manually screw with something
+  url: https://provectus.github.io/kafka-ui-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kafka-ui
+  namespace: flux-system
+spec:
+  interval: 10m #this only hits the locally cached chart registry
+  timeout: 1m
+  chart:
+    spec:
+      chart: kafka-ui
+      version: 0.7.6
+      sourceRef:
+        kind: HelmRepository
+        name: kafka-ui
+  releaseName: kafka-ui
+  targetNamespace: kafka
+  storageNamespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  test:
+    enable: false
+  driftDetection:
+    mode: enabled
+  #this chart has an initialDelaySeconds of 60 before attempting to probe
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: kafka-ui
+                namespace: kafka
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: kafka-ui
+                        livenessProbe:
+                          httpGet:
+                            path: /kafka-ui/actuator/health
+                            port: http
+                            scheme: HTTP
+                          initialDelaySeconds: 0
+                          periodSeconds: 5
+                          failureThreshold: 6
+                        readinessProbe:
+                          httpGet:
+                            path: /kafka-ui/actuator/health
+                            port: http
+                            scheme: HTTP
+                          initialDelaySeconds: 0
+                          periodSeconds: 5
+                          failureThreshold: 6
+  values:
+    ingress:
+      enabled: true
+      ingressClassName: "nginx"
+      pathType: "Prefix"
+      path: "/kafka-ui"
+    yamlApplicationConfig:
+      kafka:
+        clusters:
+          - name: "kafka"
+            bootstrapServers: "kafka:9092"
+      auth:
+        type: "disabled"
+      management:
+        health:
+          ldap:
+            enabled: false
+      server:
+        servlet:
+          context-path: "/kafka-ui"
+---

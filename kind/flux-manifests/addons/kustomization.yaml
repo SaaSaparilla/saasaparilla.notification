@@ -5,6 +5,7 @@ resources:
   - bitnami-kafka.yaml
   - bitnami-postgresql.yaml
   - bitnami-valkey.yaml
+  - kafka-ui.yaml
   - local-registry-hosting.yaml
   - metrics-server.yaml
   - nginx-ingress-controller.yaml
