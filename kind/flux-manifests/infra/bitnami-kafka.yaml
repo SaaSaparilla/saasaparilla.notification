@@ -21,10 +21,9 @@ spec:
     kind: OCIRepository
     name: bitnami-kafka
   releaseName: kafka
-  targetNamespace: kafka
+  targetNamespace: infra
   storageNamespace: flux-system
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
@@ -73,10 +72,10 @@ spec:
       enabled: true
       topics:
         - name: "saasaparilla_notification_received"
-          partitions: 1
-          replicationFactor: 1
+          partitions: 3
+          replicationFactor: 2
           config:
             max.message.bytes: 64000
             flush.messages: 1
-    namespaceOverride: "kafka"
+    namespaceOverride: "infra"
 ---

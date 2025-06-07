@@ -24,7 +24,7 @@ spec:
         kind: HelmRepository
         name: kafka-ui
   releaseName: kafka-ui
-  targetNamespace: kafka
+  targetNamespace: infra
   storageNamespace: flux-system
   install:
     remediation:
@@ -45,7 +45,7 @@ spec:
               kind: Deployment
               metadata:
                 name: kafka-ui
-                namespace: kafka
+                namespace: infra
               spec:
                 template:
                   spec:
@@ -77,7 +77,7 @@ spec:
       kafka:
         clusters:
           - name: "kafka"
-            bootstrapServers: "kafka:9092"
+            bootstrapServers: "kafka-controller-0.kafka-controller-headless.infra.svc.cluster.local:9092,kafka-controller-1.kafka-controller-headless.infra.svc.cluster.local:9092,kafka-controller-2.kafka-controller-headless.infra.svc.cluster.local:9092"
       auth:
         type: "disabled"
       management:

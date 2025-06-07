@@ -21,10 +21,9 @@ spec:
     kind: OCIRepository
     name: bitnami-valkey
   releaseName: valkey
-  targetNamespace: valkey
+  targetNamespace: infra
   storageNamespace: flux-system
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
@@ -41,5 +40,5 @@ spec:
       resourcesPreset: "micro"
     replica:
       resourcesPreset: "micro"
-    namespaceOverride: "valkey"
+    namespaceOverride: "infra"
 ---

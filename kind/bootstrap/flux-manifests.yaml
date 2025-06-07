@@ -27,3 +27,4 @@ spec:
   path: "kind/flux-manifests/"
   prune: true
   timeout: 1m
+---

@@ -24,7 +24,7 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
   releaseName: ingress-nginx
-  targetNamespace: kube-system
+  targetNamespace: addons
   storageNamespace: flux-system
   install:
     remediation:
@@ -56,5 +56,5 @@ spec:
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: Exists
-    namespaceOverride: "kube-system"
+    namespaceOverride: "addons"
 ---

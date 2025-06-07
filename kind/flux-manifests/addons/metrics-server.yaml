@@ -24,7 +24,7 @@ spec:
         kind: HelmRepository
         name: metrics-server
   releaseName: metrics-server
-  targetNamespace: kube-system
+  targetNamespace: addons
   storageNamespace: flux-system
   install:
     remediation:

@@ -61,9 +61,9 @@ run-kind:
     docker run --name saasaparilla-notification-registry --rm --detach --network kind -p 5000:5000 registry:2
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ ||\
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ #do this twice to apply the custom resources
-    kubectl --context kind-saasaparilla-notification wait --for=create namespace/ingress-nginx
-    kubectl --context kind-saasaparilla-notification wait --for=create service/ingress-nginx-controller --namespace ingress-nginx
-    kubectl --context kind-saasaparilla-notification wait --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' service/ingress-nginx-controller --namespace ingress-nginx
+    kubectl --context kind-saasaparilla-notification wait --for=create namespace/addons
+    kubectl --context kind-saasaparilla-notification wait --for=create service/ingress-nginx-controller --namespace addons
+    kubectl --context kind-saasaparilla-notification wait --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' service/ingress-nginx-controller --namespace addons
     echo "INFO:    Kind cluster is ready to use"
 
 generate-flux-system-yaml:

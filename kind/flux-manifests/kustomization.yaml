@@ -1,5 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - addons
-  - apps
+  - addons/_bootstrap.yaml
+  - apps/_bootstrap.yaml
+  - infra/_bootstrap.yaml

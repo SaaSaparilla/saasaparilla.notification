@@ -5,6 +5,7 @@ resources:
   - flux-install.yaml
   - git-server.yaml
   - flux-manifests.yaml
+  - local-registry-hosting.yaml
 patches:
   - patch: |-
       kind: ignored
