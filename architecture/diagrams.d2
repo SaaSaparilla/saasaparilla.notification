@@ -17,10 +17,12 @@ layers: {
       receiver
       director
       distributor
-      redis: {shape: cylinder}
       kafka: {shape: queue}
+      redis: {shape: cylinder}
+      postgresql: {shape: cylinder}
       receiver -> kafka -> director -> distributor
       director <-> redis <-> distributor
+      director <-> postgresql <-> distributor
     }
 
     user: {shape: person}
@@ -51,10 +53,12 @@ layers: {
         5: distributor
         6: distributor
       }
-      redis: {shape: cylinder}
       kafka: {shape: queue}
+      redis: {shape: cylinder}
+      postgresql: {shape: cylinder}
       receivers -> kafka -> directors -> distributors
       directors <-> redis <-> distributors
+      directors <-> postgresql <-> distributors
     }
 
     users: {
@@ -105,10 +109,12 @@ layers: {
         5: distributor
         6: distributor
       }
-      redis: {shape: cylinder}
       kafka: {shape: queue}
+      redis: {shape: cylinder}
+      postgresql: {shape: cylinder}
       receivers -> kafka -> directors -> distributors
       directors <-> redis <-> distributors
+      directors <-> postgresql <-> distributors
     }
 
     users: {
@@ -156,11 +162,12 @@ layers: {
         5: distributor
         6: distributor
       }
-      redis: {shape: cylinder}
       kafka: {shape: queue}
-      receivers -> kafka -> directors
-      directors -> distributors
+      redis: {shape: cylinder}
+      postgresql: {shape: cylinder}
+      receivers -> kafka -> directors -> distributors
       directors <-> redis <-> distributors
+      directors <-> postgresql <-> distributors
     }
 
     users: {
@@ -205,10 +212,12 @@ layers: {
         2: distributor
         3: distributor
       }
-      redis: {shape: cylinder}
       kafka: {shape: queue}
+      redis: {shape: cylinder}
+      postgresql: {shape: cylinder}
       receivers -> kafka -> directors -> distributors
       directors <-> redis <-> distributors
+      directors <-> postgresql <-> distributors
     }
 
     users: {
