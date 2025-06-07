@@ -58,7 +58,8 @@ run-kind:
     echo "INFO:    Deploying kind cluster..."
     kind create cluster --config kind/cluster.yaml --name saasaparilla-notification --wait 5m
     docker run --name saasaparilla-notification-cloud-provider-kind --rm --detach --network kind -v /var/run/docker.sock:/var/run/docker.sock registry.k8s.io/cloud-provider-kind/cloud-controller-manager:v0.6.0
-    docker run --name saasaparilla-notification-registry --rm --detach --network kind -p 5000:5000 registry:2
+    mkdir -p /tmp/saasaparilla-notification-kind-registry/
+    docker run --name saasaparilla-notification-registry --rm --detach --network kind -p 5000:5000 -v /tmp/saasaparilla-notification-kind-registry:/var/lib/registry registry:3
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ ||\
     kubectl --context kind-saasaparilla-notification apply -k kind/bootstrap/ #do this twice to apply the custom resources
     kubectl --context kind-saasaparilla-notification wait --for=create namespace/addons
