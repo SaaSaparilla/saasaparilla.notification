@@ -4,8 +4,8 @@ metadata:
   name: bitnami-kafka
   namespace: flux-system
 spec:
-  interval: 1h #minimize impact on bitnami's servers - users can `flux reconcile` if they manually screw with something
-  url: oci://registry-1.docker.io/bitnamicharts/kafka
+  interval: 1h #minimize impact on dockerhub's servers - users can `flux reconcile` if they manually screw with something
+  url: oci://registry-1.docker.io/saasaparillacharts/kafka
   ref:
     tag: "32.2.8"
 ---
@@ -33,6 +33,17 @@ spec:
     enable: false
   driftDetection:
     mode: enabled
+  postRenderers:
+    - kustomize:
+        images:
+          - name: bitnami/kafka
+            newName: saasaparilla/kafka
+          - name: bitnami/os-shell
+            newName: saasaparilla/os-shell
+          - name: bitnami/kubectl
+            newName: saasaparilla/kubectl
+          - name: bitnami/jmx-exporter
+            newName: saasaparilla/jmx-exporter
   values:
     listeners:
       client:

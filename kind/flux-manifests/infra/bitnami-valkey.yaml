@@ -4,8 +4,8 @@ metadata:
   name: bitnami-valkey
   namespace: flux-system
 spec:
-  interval: 1h #minimize impact on bitnami's servers - users can `flux reconcile` if they manually screw with something
-  url: oci://registry-1.docker.io/bitnamicharts/valkey
+  interval: 1h #minimize impact on dockerhub's servers - users can `flux reconcile` if they manually screw with something
+  url: oci://registry-1.docker.io/saasaparillacharts/valkey
   ref:
     tag: "3.0.9"
 ---
@@ -33,6 +33,19 @@ spec:
     enable: false
   driftDetection:
     mode: enabled
+  postRenderers:
+    - kustomize:
+        images:
+          - name: bitnami/valkey
+            newName: saasaparilla/valkey
+          - name: bitnami/valkey-exporter
+            newName: saasaparilla/valkey-exporter
+          - name: bitnami/valkey-sentinel
+            newName: saasaparilla/valkey-sentinel
+          - name: bitnami/os-shell
+            newName: saasaparilla/os-shell
+          - name: bitnami/kubectl
+            newName: saasaparilla/kubectl
   values:
     auth:
       enabled: false

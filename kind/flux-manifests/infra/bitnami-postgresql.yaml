@@ -4,8 +4,8 @@ metadata:
   name: bitnami-postgresql
   namespace: flux-system
 spec:
-  interval: 1h #minimize impact on bitnami's servers - users can `flux reconcile` if they manually screw with something
-  url: oci://registry-1.docker.io/bitnamicharts/postgresql
+  interval: 1h #minimize impact on dockerhub's servers - users can `flux reconcile` if they manually screw with something
+  url: oci://registry-1.docker.io/saasaparillacharts/postgresql
   ref:
     tag: "16.7.10"
 ---
@@ -33,6 +33,15 @@ spec:
     enable: false
   driftDetection:
     mode: enabled
+  postRenderers:
+    - kustomize:
+        images:
+          - name: bitnami/postgresql
+            newName: saasaparilla/postgresql
+          - name: bitnami/postgres-exporter
+            newName: saasaparilla/postgres-exporter
+          - name: bitnami/os-shell
+            newName: saasaparilla/os-shell
   values:
     auth:
       postgresPassword: "admin_password"
